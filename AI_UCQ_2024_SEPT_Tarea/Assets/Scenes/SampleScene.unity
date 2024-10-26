@@ -443,6 +443,8 @@ MonoBehaviour:
   MaxAcceleration: 5
   targetGameObject: {fileID: 667569020}
   ObstacleForceToApply: 110.8
+  myWeaponType: 0
+  ObstacleLayerName: Obstacle
 --- !u!136 &604084848
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -634,6 +636,8 @@ MonoBehaviour:
   MaxAcceleration: 1
   targetGameObject: {fileID: 0}
   ObstacleForceToApply: 1
+  myWeaponType: 0
+  ObstacleLayerName: Obstacle
   WanderDistance: 7.08
   ToleranceRadius: 3
 --- !u!65 &612199199
@@ -955,6 +959,8 @@ MonoBehaviour:
   MaxAcceleration: 5
   targetGameObject: {fileID: 0}
   ObstacleForceToApply: 1
+  myWeaponType: 0
+  ObstacleLayerName: Obstacle
   PatrolPoints:
   - {fileID: 391038639}
   - {fileID: 1780263293}
@@ -1398,6 +1404,8 @@ MonoBehaviour:
   MaxAcceleration: 39.65
   targetGameObject: {fileID: 667569020}
   ObstacleForceToApply: 1
+  myWeaponType: 0
+  ObstacleLayerName: Obstacle
 --- !u!54 &1335112127
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1444,6 +1452,8 @@ MonoBehaviour:
   MaxAcceleration: 5
   targetGameObject: {fileID: 667569020}
   ObstacleForceToApply: 1
+  myWeaponType: 0
+  ObstacleLayerName: Obstacle
   TargetPos: {x: -1, y: 1, z: 0}
   SpherePos: {x: 2, y: 1, z: 0}
   SphereRadius: 5.06

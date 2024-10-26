@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "AI_UCQ_2024_SEPT.sln"
+    "dotnet.defaultSolution": "AI_UCQ_2024_SEPT_Tarea.sln"
 }

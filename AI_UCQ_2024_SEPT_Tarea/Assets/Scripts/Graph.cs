@@ -260,74 +260,75 @@ public class Graph : MonoBehaviour
         return false;
     }
 
+// Algoritmo Breadth-First Search (Búsqueda en Anchura)
+bool BFS(Node Origin, Node Goal, out List<Node> PathToGoal)
+{
+    // Inicializamos la lista PathToGoal, que contendrá el camino al nodo objetivo si se encuentra.
+    PathToGoal = new List<Node>(); // Se inicializa vacía para manejar el caso en que no se encuentre ningún camino.
 
-    // Algoritmo Breadth-First Search
-    bool BFS(Node Origin, Node Goal, out List<Node> PathToGoal)
+    // HashSet para llevar el registro de los nodos que ya han sido visitados.
+    // Esto evita que procesemos el mismo nodo más de una vez.
+    HashSet<Node> VisitedNodes = new HashSet<Node>();
+
+    // Cola para almacenar los nodos conocidos pero aún no visitados.
+    // Se usa una cola en BFS para garantizar que los nodos se procesen en el orden en que se descubrieron (FIFO).
+    Queue<Node> KnownQueue = new Queue<Node>();
+
+    // Establecemos el nodo de origen como su propio padre.
+    // Esto es necesario para rastrear el camino de vuelta al nodo de origen al final.
+    Origin.Parent = Origin;
+
+    // Añadimos el nodo de origen a la cola y lo marcamos como visitado.
+    KnownQueue.Enqueue(Origin);
+    VisitedNodes.Add(Origin);
+
+    // Nodo que representa el actual nodo procesado.
+    Node CurrentNode = null;
+
+    // El ciclo continúa mientras no hayamos encontrado el nodo objetivo (Goal)
+    // y aún haya nodos por visitar en la cola.
+    while (CurrentNode != Goal && KnownQueue.Count != 0) 
     {
-        PathToGoal = new List<Node>(); // Lo inicializamos en 0 por defecto por si no encontramos ning�n camino.
+        // Desencolamos el nodo actual (FIFO).
+        CurrentNode = KnownQueue.Dequeue(); 
+        Debug.Log("Nodo: " + CurrentNode.Name); // Mensaje de depuración para ver el nodo actual.
 
-        // Para saber cu�ntos nodos hay todav�a por visitar,
-        // necesitamos llevar registro de cu�les nodos ya hemos visitado.
-        // Necesitamos dos contenedores de nodos, uno para los ya visitados y otro para los conocidos.
+        // Obtenemos los vecinos del nodo actual.
+        List<Node> currentNeighbors = GetNeighbors(CurrentNode);
 
-        // Un Set es un contenedor perfecto para los visitados, 
-        // ya que solo necesitamos saber si ya est� dentro de visitados o no.
-        HashSet<Node> VisitedNodes = new HashSet<Node>();
-
-        // Podemos usar la estructura de datos Pila (stack) para reemplazar la Pila de llamadas que usaba la versi�n recursiva
-        // del algoritmo para mantener su orden.
-        // �Cu�ndo se meten nodos en la pila? En cuanto tu nodo actual lo puede alcanzar (tiene una arista con �l), Y no 
-        // tiene ya un padre asignado (el que no tenga parent quiere decir que ning�n otro nodo ha llegado ya a este nuevo nodo).
-        // Los nodos que todav�a est�n en esta pila son los nodos que todav�a hay por visitar.
-        Queue<Node> KnownQueue = new Queue<Node>();
-
-        // Con esto evitamos que alg�n otro nodo trate de meter al origin en los nodos por visitar.
-        Origin.Parent = Origin;
-
-        KnownQueue.Enqueue(Origin);
-        VisitedNodes.Add(Origin);
-
-        // Para que no se termine el While inmediatamente (porque la KnownStack est� vac�a)
-        // nosotros tenemos que meter al menos un nodo a dicha Stack. Metemos el �nico no que tenemos certeza de que podemos alcanzar ahorita.
-
-
-        Node CurrentNode = null;
-
-        // Para "simular" la recursividad, necesitamos hacer un ciclo, ya sea un for o un while, etc.
-        // Nuestro ciclo va a tener como condici�n de finalizaci�n las mismas condiciones que la versi�n recursiva:
-        // es decir: 1) Ya llegu� a la meta (goal); 2) No hay camino en absoluto,
-        // esta condici�n 2, se cumple cuando ya visitaste TODOS los nodos que pudiste alcanzar y ninguno de ellos fue la meta (goal).
-        while ( CurrentNode != Goal && KnownQueue.Count != 0 ) /* todav�a haya nodos por visitar */
+        // Recorremos todos los vecinos del nodo actual.
+        foreach (Node neighbor in currentNeighbors)
         {
-            // Las pilas (Stack) se trabajan sobre el elemento que est� en el tope de la pila.
-            CurrentNode = KnownQueue.Dequeue(); // lee el elemento del tope de la pila PERO no lo saques.
-            Debug.Log("Nodo: " + CurrentNode.Name);
-
-            
-            // Ahora queremos meter a la Pila a los vecinos de current que no tengan parent y que no est�n en los visitados.
-            // paso 1) Obtener sus vecinos
-            List<Node> currentNeighbors = GetNeighbors(CurrentNode);
-
-            foreach (Node neighbor in currentNeighbors)
+            // Si el vecino no ha sido visitado y no tiene un nodo padre asignado,
+            // entonces lo procesamos.
+            if (!VisitedNodes.Contains(neighbor) && neighbor.Parent == null)
             {
-                if(!VisitedNodes.Contains(neighbor) && neighbor.Parent == null)
-                {
-                    VisitedNodes.Add(neighbor);
-                    KnownQueue.Enqueue(neighbor);
-                    neighbor.Parent = CurrentNode;
-                }
+                // Marcamos al vecino como visitado y lo añadimos a la cola para visitarlo más tarde.
+                VisitedNodes.Add(neighbor);
+                KnownQueue.Enqueue(neighbor);
+
+                // Asignamos el nodo actual como el padre del vecino.
+                // Esto nos permitirá reconstruir el camino al final.
+                neighbor.Parent = CurrentNode;
             }
-            
         }
-        if (Goal == CurrentNode)
-            {
-                // Ahorita no hacemos nada m�s con ella, pero si lo quisi�ramos hacer, pues de aqu� la tomar�amos.
-                PathToGoal = Backtrack(CurrentNode);
-
-                return true;
-            }
-        return false;
     }
+
+    // Si el nodo actual es el nodo objetivo, significa que encontramos el camino.
+    if (Goal == CurrentNode)
+    {
+        // Usamos la función Backtrack para reconstruir el camino desde el nodo objetivo hasta el origen.
+        PathToGoal = Backtrack(CurrentNode);
+
+        // Retornamos true, indicando que se encontró el camino.
+        return true;
+    }
+
+    // Si el ciclo termina y no se ha encontrado el nodo objetivo, retornamos false.
+    // Esto indica que no hay un camino desde el origen hasta el objetivo.
+    return false;
+}
+
     // �nicamente necesitamos que nos pasen el nodo desde el cual se quiere realizar el Backtracking.
     List<Node> Backtrack(Node inNode)
     {

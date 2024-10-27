@@ -120,7 +120,20 @@ public class Graph : MonoBehaviour
         List<Node> PathToGoalBFS = new List<Node>();
 
         // OJO: no olviden poner el out antes de los par�metros que son de salida.
-        if (BFS(NodeA, NodeH, out PathToGoalBFS))
+        if (BFS(NodeH, NodeD, out PathToGoalBFS))
+        {
+            Debug.Log("ITERATIVO: S� hay camino del nodo: " + NodeA.Name + " hacia el nodo: " + NodeH.Name);
+        }
+        else
+        {
+            Debug.Log("ITERATIVO: No hay camino del nodo: " + NodeA.Name + " hacia el nodo: " + NodeH.Name);
+        }
+        
+        ResetNodes(NodeSet);
+
+        EdgeSet.Remove(EdgeBD);
+
+        if (BFS(NodeH, NodeD, out PathToGoalBFS))
         {
             Debug.Log("ITERATIVO: S� hay camino del nodo: " + NodeA.Name + " hacia el nodo: " + NodeH.Name);
         }
@@ -139,7 +152,7 @@ public class Graph : MonoBehaviour
         }
 
         
-        ResetNodes(NodeSet);
+        
 
         if (RecursiveDFS(NodeA, NodeH))
         {
@@ -248,6 +261,7 @@ public class Graph : MonoBehaviour
     }
 
 
+    // Algoritmo Breadth-First Search
     bool BFS(Node Origin, Node Goal, out List<Node> PathToGoal)
     {
         PathToGoal = new List<Node>(); // Lo inicializamos en 0 por defecto por si no encontramos ning�n camino.
